@@ -1,0 +1,78 @@
+.wn-article-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 100%;
+  border-top: 1px solid gray;
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-top: 0.5rem;
+}
+
+.wn-article-list-item {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid lightgray;
+}
+
+.wn-article-list-item > span:nth-child(2) {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.wn-article-list-item-rank {
+  font-size: 0.75rem;
+}
+.wn-article-list-item-title {
+  font-size: 1.1rem;
+  font-weight: 400;
+}
+.wn-article-list-item-views {
+  font-weight: 300;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.wn-pagination-selector {
+  list-style: none;
+  padding: 0.5rem 0;
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.wn-pagination-selector li {
+  margin-right: 0.2rem;
+  vertical-align: bottom;
+}
+
+.wn-pagination-selector button {
+  font: inherit;
+  font-size: 0.9rem;
+  border: 1px solid grey;
+  background-color: whitesmoke;
+  border-radius: 3px;
+}
+.wn-pagination-selector button:hover {
+  cursor: pointer;
+  border-color: darkgray;
+  background-color: lightgrey;
+}
+
+.wn-pagination-selector .active button {
+  font-weight: 600;
+  border: 2px solid black;
+  margin: 0 0.1rem;
+}

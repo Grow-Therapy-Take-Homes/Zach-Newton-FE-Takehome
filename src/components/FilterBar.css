@@ -1,0 +1,19 @@
+.wn-filter-bar {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.wn-filter-bar input, .wn-filter-bar select {
+  font: inherit;
+}
+
+.wn-filter-bar label {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.wn-filter-bar label span {
+  font-size: 0.85em;
+}
