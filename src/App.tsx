@@ -2,24 +2,45 @@ import React from 'react';
 import Logo from "./logo.png";
 import './App.css';
 import { ArticleList, FilterBar } from './components';
-import { getTopWikipediaArticlesForDay, ITopWikiArticle } from './api';
+import { getTopWikipediaArticlesForDay, ITopWikiArticle, localStore } from './api';
 
 const yesterday = new Date();
 yesterday.setDate(yesterday.getDate() - 1);
 
+const getPinnedArticlesSet = () => {
+  return new Set(localStore.get<string[]>("pinned_articles") ?? []);
+}
+
 const App: React.FunctionComponent = () => {
+  // State is fairly simple, so don't use Redux or anything fancy.
   const [date, setDate] = React.useState<number>(yesterday.getTime());
   const [numResults, setNumResults] = React.useState(100);
   const [topWikiArticles, setTopWikiArticles] = React.useState<ITopWikiArticle[]>([]);
+  const [pinnedArticles, setPinnedArticles] = React.useState<Set<string>>(getPinnedArticlesSet())
   const [error, setError] = React.useState<Error | undefined>();
 
-  const handleDateChange = React.useCallback((newDate: Date) => {
-    setDate(newDate.getTime());
+  const handleDateChange = React.useCallback((newDate: number) => {
+    // Wikimedia API does not allow today
+    if (newDate > yesterday.getTime()) {
+      return 
+    }
+    setDate(newDate);
   }, []);
 
   const handleNumberResultsChange = React.useCallback((newNumResults: number) => {
     setNumResults(newNumResults);
   }, []);
+
+  const handleArticlePin = React.useCallback((article: string) => {
+    const pinnedArticlesDupe = new Set(pinnedArticles.values());
+    if (pinnedArticlesDupe.has(article)) {
+      pinnedArticlesDupe.delete(article);
+    } else {
+      pinnedArticlesDupe.add(article);
+    }
+    setPinnedArticles(pinnedArticlesDupe);
+    localStore.set<string[]>("pinned_articles", Array.from(pinnedArticlesDupe.values()));
+  }, [pinnedArticles, setPinnedArticles]);
 
   React.useEffect(() => {
     const day = new Date(date);
@@ -47,7 +68,7 @@ const App: React.FunctionComponent = () => {
       <main className="wn-app">
         <FilterBar date={date} onDateChange={handleDateChange} numberResults={numResults} onNumberResultsChange={handleNumberResultsChange} />
         {error ? <div className="wn-error"><pre>{error.toString() ?? error.message ?? JSON.stringify(error, undefined, 2)}</pre></div> : null}
-        <ArticleList numberResultsPerPage={numResults} articles={topWikiArticles} />
+        <ArticleList numberResultsPerPage={numResults} articles={topWikiArticles} pinnedArticles={pinnedArticles} onArticlePin={handleArticlePin} />
       </main>
       <footer className="wn-footer">
         <a className="wn-footer-link" href="https://github.com/znewton/wikinews">

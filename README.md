@@ -1,6 +1,6 @@
 # WikiNews
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app) for the sake of bootstrapping simplicity.
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app) for the sake of simplicity.
 
 ## Getting Started
 

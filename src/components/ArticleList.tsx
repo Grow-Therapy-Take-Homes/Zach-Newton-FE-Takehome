@@ -21,22 +21,44 @@ const PaginationSelector: React.FunctionComponent<IPaginationSelectorProps> = ({
   </ul>
 };
 
-const ArticleListItem: React.FunctionComponent<{ article: ITopWikiArticle }> = ({ article }) => {
-  return <li className="wn-article-list-item">
-    <span className="wn-article-list-item-rank">#{article.rank}</span>
-    <span>
-      <span className="wn-article-list-item-title"><a href={`https://en.wikipedia.org/wiki/${article.article}`}>{article.article.replace(/_/g, " ")}</a></span>
-      <span className="wn-article-list-item-views"><span>Views:</span><span>{article.views}</span></span>
-    </span>
-  </li>
+interface IArticleLinkProps {
+  article: string;
+  pinned: boolean;
+  onArticlePin: (article: string) => void;
+}
+const ArticleLink: React.FunctionComponent<IArticleLinkProps> = ({article, pinned, onArticlePin}) =>
+  <span className="wn-article-list-item-title">
+    <button className="wn-article-list-item-pin" onClick={() => onArticlePin(article)} title="pin article">
+      {pinned ? <span>&#9733;</span> : <span>&#9734;</span>}
+    </button>
+    <a href={`https://en.wikipedia.org/wiki/${article}`}>{article.replace(/_/g, " ")}</a>
+  </span>;
+
+interface IArticleListItemProps {
+  article: ITopWikiArticle;
+  pinned: boolean;
+  onArticlePin: (article: string) => void;
+}
+const ArticleListItem: React.FunctionComponent<IArticleListItemProps> = ({ article, onArticlePin, pinned }) => {
+  return (
+    <li className="wn-article-list-item">
+      <span className="wn-article-list-item-rank">#{article.rank}</span>
+      <span>
+        <ArticleLink article={article.article} pinned={pinned} onArticlePin={onArticlePin} />
+        <span className="wn-article-list-item-views"><span>Views:</span><span>{article.views}</span></span>
+      </span>
+    </li>
+  );
 };
 
 interface IArticleListProps {
   articles: ITopWikiArticle[];
+  pinnedArticles: Set<string>;
   numberResultsPerPage: number;
+  onArticlePin: (article: string) => void;
 }
 
-export const ArticleList: React.FunctionComponent<IArticleListProps> = ({ articles, numberResultsPerPage}) => {
+export const ArticleList: React.FunctionComponent<IArticleListProps> = ({ articles, numberResultsPerPage, onArticlePin, pinnedArticles}) => {
   const [page, setPage] = React.useState(0);
   const currentPage: ITopWikiArticle[] = React.useMemo(
     () => articles.filter((article, i) => i >= page * numberResultsPerPage && i < page * numberResultsPerPage + numberResultsPerPage),
@@ -46,9 +68,14 @@ export const ArticleList: React.FunctionComponent<IArticleListProps> = ({ articl
     setPage(newPage)
   }, [setPage]);
   return <>
+    <ul className="wn-pinned-article-list">
+      {Array.from(pinnedArticles.values()).map((article) => <li key={article} >
+          <ArticleLink article={article} pinned={true} onArticlePin={onArticlePin} />
+        </li>)}
+    </ul>
     <PaginationSelector currentPage={page} numberPages={Math.ceil(articles.length / numberResultsPerPage)} onPageChange={handlePageChange} />
     <ul className="wn-article-list">
-      {currentPage.map((article) => <ArticleListItem key={article.article} article={article} />)}
+      {currentPage.map((article) => <ArticleListItem key={article.article} article={article} onArticlePin={onArticlePin} pinned={pinnedArticles.has(article.article)} />)}
     </ul>
     <PaginationSelector currentPage={page} numberPages={Math.ceil(articles.length / numberResultsPerPage)} onPageChange={handlePageChange} />
   </>

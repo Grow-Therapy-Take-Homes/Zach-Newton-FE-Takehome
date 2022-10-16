@@ -41,6 +41,22 @@
   flex-direction: column;
   align-items: flex-end;
 }
+.wn-article-list-item-pin {
+  font: inherit;
+  border: none;
+  background-color: transparent;
+}
+.wn-article-list-item-pin:hover {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.wn-pinned-article-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  /* width: 100%; */
+}
 
 .wn-pagination-selector {
   list-style: none;

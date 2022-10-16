@@ -5,7 +5,7 @@ const numberResultsOptions = [25,50,100,200];
 
 interface IFilterBarProps {
   date: number;
-  onDateChange: (newDate: Date) => void;
+  onDateChange: (newDate: number) => void;
   numberResults: number;
   onNumberResultsChange: (newNumResults: number) => void;
 }
@@ -15,7 +15,9 @@ export const FilterBar: React.FunctionComponent<IFilterBarProps> = ({ date, onDa
     if (e.target.valueAsDate === null) {
       return;
     }
-    onDateChange(e.target.valueAsDate);
+    const datetime = new Date(`${e.target.value} 01:00:00`).getTime();
+    // Datepicker value is in format YYYY-MM-DD, but that ends up as previous day unless you set the time to be positive.
+    onDateChange(datetime);
   }, [onDateChange]);
   const dateString = React.useMemo(() => {
     const d = new Date(date);
